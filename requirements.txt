@@ -1,0 +1,16 @@
+numpy
+pandas
+scipy
+scikit-image
+PyWavelets
+opencv-python
+pillow
+matplotlib
+tabulate
+pytesseract
+rapidfuzz
+codecarbon
+torch
+torchvision
+pretrainedmodels
+gdown

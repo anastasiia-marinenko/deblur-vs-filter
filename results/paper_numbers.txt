@@ -1,0 +1,77 @@
+====================================================================================================
+0. Check: Tesseract CER on the sharp images (mean over 30 texts), %: 0.09
+====================================================================================================
+TABLE 1. CER, % - mean over all images of the group (30 texts x 3 lengths x 4 noise levels;
+ horizontal also x 2 models). Images per group: {'angle 8°': 360, 'hand shake': 360, 'horizontal': 720}
+grp                     horizontal  angle 8°  hand shake
+No restoration                72.2      66.3        61.7
+Pseudo-inverse 1D             11.3      60.3        75.0
+Pseudo-inverse 2D             16.8      16.5        70.0
+DeblurGAN-v2 MobileNet        67.7      57.4        61.3
+DeblurGAN-v2 Inception        62.0      45.7        58.3
+
+Time (ms per image) and energy (J per image, whole machine) from efficiency.csv:
+        method device  ms_per_img_mean  gross_J_per_img                      cpu_model    gpu_model cpu_tracking
+   pinv_oracle    cpu            10.31             0.66 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+    pinv_blind    cpu            11.86             0.80 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+  pinv2d_blind    cpu            31.59             2.06 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+dgv2_mobilenet    cpu           188.94            12.65 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+dgv2_mobilenet   cuda            16.21             1.37 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+dgv2_inception    cpu           639.33            41.57 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+dgv2_inception   cuda            47.16             4.44 Intel(R) Xeon(R) CPU @ 2.00GHz 2 x Tesla T4     cpu_load
+====================================================================================================
+TABLE 2. CER, %, horizontal motion, by noise sigma:
+sigma                    0.0    2.0    5.0    10.0
+No restoration          73.27  70.80  70.64  74.00
+Pseudo-inverse 1D        0.18   0.42  16.52  27.98
+Pseudo-inverse 2D        9.83   9.77  17.81  29.96
+DeblurGAN-v2 MobileNet  62.31  65.02  70.53  73.12
+DeblurGAN-v2 Inception  61.48  60.43  59.14  67.00
+====================================================================================================
+BLUR PARAMETER ERRORS (median |estimate - true|):
+  1D, L, px: {'angle8': 0.645, 'box': 0.041, 'shake': 9.234, 'sinc': 0.047}
+  2D, L, px: {'angle8': 0.502, 'box': 0.03, 'shake': 13.985, 'sinc': 0.029}
+  2D, theta, deg (means nothing for shake): {'angle8': 0.201, 'box': 0.032, 'shake': 27.961, 'sinc': 0.026}
+====================================================================================================
+HAND SHAKE by length L, CER, % (Fig. 1c):
+method     blurred  pinv_blind  pinv2d_blind  dgv2_mobilenet  dgv2_inception
+length_px                                                                   
+10.0          25.4        70.4          48.2            25.1            19.4
+20.0          77.6        74.2          77.9            76.0            71.8
+32.0          81.9        80.5          83.9            82.6            83.8
+  texts where Inception beats the 2D filter: 29 of 30
+====================================================================================================
+PAIRED COMPARISONS BY TEXT (stats_paired.csv, CER): share of texts where the first method is better, and p:
+ group                       compare  mean_a  mean_b  share_a_better  p_wilcoxon
+   all pinv2d_blind - dgv2_inception  0.3005  0.5701          1.0000       0.000
+   all pinv2d_blind - dgv2_mobilenet  0.3005  0.6353          1.0000       0.000
+   all   pinv_blind - dgv2_inception  0.3946  0.5701          1.0000       0.000
+   all   pinv_blind - dgv2_mobilenet  0.3946  0.6353          1.0000       0.000
+   all     pinv2d_blind - pinv_blind  0.3005  0.3946          1.0000       0.000
+angle8 pinv2d_blind - dgv2_inception  0.1652  0.4569          1.0000       0.000
+angle8 pinv2d_blind - dgv2_mobilenet  0.1652  0.5737          1.0000       0.000
+angle8   pinv_blind - dgv2_inception  0.6025  0.4569          0.0000       0.000
+angle8   pinv_blind - dgv2_mobilenet  0.6025  0.5737          0.3000       0.012
+angle8     pinv2d_blind - pinv_blind  0.1652  0.6025          1.0000       0.000
+   box pinv2d_blind - dgv2_inception  0.1643  0.6217          1.0000       0.000
+   box pinv2d_blind - dgv2_mobilenet  0.1643  0.6798          1.0000       0.000
+   box   pinv_blind - dgv2_inception  0.1128  0.6217          1.0000       0.000
+   box   pinv_blind - dgv2_mobilenet  0.1128  0.6798          1.0000       0.000
+   box     pinv2d_blind - pinv_blind  0.1643  0.1128          0.0000       0.000
+ shake pinv2d_blind - dgv2_inception  0.7001  0.5832          0.0333       0.000
+ shake pinv2d_blind - dgv2_mobilenet  0.7001  0.6127          0.0333       0.000
+ shake   pinv_blind - dgv2_inception  0.7505  0.5832          0.0333       0.000
+ shake   pinv_blind - dgv2_mobilenet  0.7505  0.6127          0.0000       0.000
+ shake     pinv2d_blind - pinv_blind  0.7001  0.7505          0.8333       0.000
+  sinc pinv2d_blind - dgv2_inception  0.1726  0.6186          1.0000       0.000
+  sinc pinv2d_blind - dgv2_mobilenet  0.1726  0.6752          1.0000       0.000
+  sinc   pinv_blind - dgv2_inception  0.1127  0.6186          1.0000       0.000
+  sinc   pinv_blind - dgv2_mobilenet  0.1127  0.6752          1.0000       0.000
+  sinc     pinv2d_blind - pinv_blind  0.1726  0.1127          0.0000       0.000
+====================================================================================================
+SSIM (for reference):
+method      blurred  pinv_blind  pinv2d_blind  dgv2_mobilenet  dgv2_inception
+grp                                                                          
+angle 8°      0.531       0.376         0.542           0.540           0.578
+hand shake    0.456       0.208         0.226           0.449           0.443
+horizontal    0.572       0.626         0.606           0.571           0.590

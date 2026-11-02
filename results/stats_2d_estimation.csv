@@ -1,0 +1,7 @@
+,sigma,sigma,L_err,L_err,angle_err,angle_err
+,median,<lambda_0>,median,<lambda_0>,median,<lambda_0>
+blur_model,,,,,,
+angle8,3.5,10.0,0.502,0.702,0.201,0.682
+box,3.5,10.0,0.03,0.2,0.032,0.217
+shake,3.5,10.0,13.985,27.739,27.961,77.651
+sinc,3.5,10.0,0.029,0.236,0.026,0.163

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# made by the scripts, big
+data/
+weights/
+DeblurGANv2/
+results/restored/
+atlas_out/atlas/
+atlas_out/*.pdf
